@@ -3,7 +3,7 @@ import os
 
 from setuptools import setup
 
-VERSION = '1.9.0'
+VERSION = '1.9.1'
 
 
 def readme(*paths):
