@@ -1,6 +1,16 @@
 import json
 import traceback
-from logging import Handler, CRITICAL, ERROR, WARNING, INFO, FATAL, DEBUG, NOTSET, Formatter
+from logging import (
+    CRITICAL,
+    DEBUG,
+    ERROR,
+    FATAL,
+    INFO,
+    NOTSET,
+    WARNING,
+    Formatter,
+    Handler,
+)
 
 import six
 from slack_sdk import WebClient
@@ -20,7 +30,7 @@ COLORS = {
     NOTSET: INFO_COLOR,
 }
 
-DEFAULT_EMOJI = ":popcat:"
+DEFAULT_EMOJI = ":heavy_exclamation_mark:"
 
 
 class NoStacktraceFormatter(Formatter):
@@ -66,7 +76,9 @@ class SlackerLogHandler(Handler):
 
         self.username = username
         self.icon_url = icon_url
-        self.icon_emoji = icon_emoji if (icon_emoji or icon_url) else DEFAULT_EMOJI
+        self.icon_emoji = (
+            icon_emoji if (icon_emoji or icon_url) else DEFAULT_EMOJI
+        )
         self.channel = channel
         self.ping_level = ping_level
         self.ping_users = []
@@ -81,16 +93,23 @@ class SlackerLogHandler(Handler):
                         self.ping_users.append(user["id"])
                         break
                 else:
-                    raise RuntimeError("User not found in Slack users list: %s" % ping_user)
+                    raise RuntimeError(
+                        "User not found in Slack users list: %s" % ping_user
+                    )
 
     def build_msg(self, record):
         return six.text_type(self.format(record))
 
     def build_trace(self, record, fallback):
-        trace = {"fallback": fallback, "color": COLORS.get(self.level, INFO_COLOR)}
+        trace = {
+            "fallback": fallback,
+            "color": COLORS.get(self.level, INFO_COLOR),
+        }
 
         if record.exc_info:
-            trace["text"] = "\n".join(traceback.format_exception(*record.exc_info))
+            trace["text"] = "\n".join(
+                traceback.format_exception(*record.exc_info)
+            )
 
         return trace
 
